@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate portable package
+        run: python scripts/validate_repository.py
+      - name: Test provisioning invariants without network
+        run: python skills/android-static-env/scripts/test_setup.py
+
+  agent-installation:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install and verify all documented agent targets
+        run: python scripts/test_agent_install.py --report .validation/agent-installs.json
+      - name: Verify default symlink installation
+        if: runner.os != 'Windows'
+        run: python scripts/test_agent_install.py --mode symlink --report .validation/agent-symlinks.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: agent-installation-${{ matrix.os }}
+          path: .validation/*.json
