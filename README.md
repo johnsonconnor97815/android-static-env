@@ -69,9 +69,24 @@ Codex 可显式使用 `$android-static-env`；Claude Code 可使用 `/android-st
 | `.so` / ELF | Ghidra、Rizin、LLVM/binutils、checksec、LIEF、pyelftools、Capstone |
 | 规则与加固识别 | APKiD、YARA、Quark + 固定规则、Semgrep |
 | 基础工具 | Temurin JDK 21、Python venv、ripgrep、jq、file、7z、OpenSSL、Graphviz |
+| MCP 接入 | JADX + 插件、Apktool MCP、PyGhidra-MCP、Semgrep 内置 MCP；本地 stdio 与项目配置 |
 | 可选 | MobSF 容器；特殊 Flutter、Unity IL2CPP、Hermes 工具按输入选择 |
 
 `full` 为默认范围；`core` 适用于轻量环境；`--only` 可补装指定组件。完整选型见 [工具矩阵](skills/android-static-env/references/tool-matrix.md)。
+
+## MCP 接入
+
+需要 Agent 直接导航反编译结果、查询 `.so` 或调用规则扫描时：
+
+```bash
+python3 skills/android-static-env/scripts/mcp_setup.py install --workspace ../android-analysis
+python3 skills/android-static-env/scripts/mcp_setup.py check --workspace ../android-analysis
+python3 skills/android-static-env/scripts/mcp_setup.py configure --workspace ../android-analysis --client codex
+```
+
+支持 `--servers jadx,apktool,ghidra,semgrep` 选择服务，自动补装对应引擎。`--client` 支持 `codex`、`claude`、`cursor`、`vscode`；配置合并前备份，保留其他服务。JADX 需要专用 GUI 打开样本，默认不启用；其他三项可无界面运行。协议检查与样本分析分开验证。
+
+固定版本、GUI 启动、配置位置、实际调用验证，以及 headless JADX、radare2、MobSF、FlowDroid 等候选的边界见 [MCP 文档](skills/android-static-env/references/mcp.md)。
 
 ## 直接运行安装器
 
@@ -105,6 +120,7 @@ so-info path/to/libexample.so --source '样本来源或提取记录' --output so
 ```bash
 python3 scripts/validate_repository.py
 python3 skills/android-static-env/scripts/test_setup.py
+python3 skills/android-static-env/scripts/test_mcp.py
 python3 scripts/test_agent_install.py --report .validation/agent-installs.json
 ```
 

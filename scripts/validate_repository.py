@@ -24,7 +24,10 @@ def validate():
     assert len(text.splitlines()) < 500
     assert (SKILL / 'LICENSE').read_bytes() == (ROOT / 'LICENSE').read_bytes()
     required = ['scripts/setup.py', 'scripts/smoke.py', 'scripts/inspect_so.py',
-                'scripts/test_setup.py', 'assets/toolchain.lock.json', 'agents/openai.yaml']
+                'scripts/test_setup.py', 'assets/toolchain.lock.json', 'agents/openai.yaml',
+                'scripts/mcp_setup.py', 'scripts/mcp_probe.py', 'scripts/mcp_smoke.py',
+                'scripts/ghidra_mcp_entry.py', 'scripts/test_mcp.py',
+                'assets/mcp.lock.json', 'references/mcp.md']
     assert all((SKILL / p).is_file() for p in required)
     for file in SKILL.rglob('*'):
         if not file.is_file() or '__pycache__' in file.parts:
@@ -55,6 +58,14 @@ def validate():
             assert algorithm in ['sha1', 'sha256']
             assert len(value) == {'sha1': 40, 'sha256': 64}[algorithm]
             assert re.fullmatch('[0-9a-f]+', value)
+    mcp = json.loads((SKILL / 'assets/mcp.lock.json').read_text())
+    assert mcp['schema'] == 1
+    for recipe in mcp['artifacts'].values():
+        assert recipe['url'].startswith('https://')
+        if recipe.get('checksum'):
+            assert re.fullmatch(r'sha256:[0-9a-f]{64}', recipe['checksum'])
+    assert mcp['artifacts']['mcp-jadx-plugin']['version'] == mcp['artifacts']['mcp-jadx-server']['version']
+    assert re.fullmatch('[0-9a-f]{40}', mcp['artifacts']['mcp-jadx-plugin-source']['git_blob_sha1'])
     print('Portable Agent Skills package: valid')
     return 0
 

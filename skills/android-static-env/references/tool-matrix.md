@@ -31,6 +31,10 @@
 | React Native Hermes | 匹配 Hermes 版本的 hbcdump/相关解析工具 | 按需；检查 bundle 是否为 HBC，字节码版本不匹配不得强行解释 |
 | 跨版本比对 | diff、JADX 输出比对、rz-diff、Ghidra Version Tracking | 按需；相同反编译设置、区分改名/资源重排与逻辑变化 |
 
+## Agent / MCP 接入
+
+JADX、Apktool、PyGhidra 与 Semgrep 的安装、客户端配置和实际调用验证见 [MCP 文档](mcp.md)。MCP 是调用接口，不能补回加固后缺失的代码或自动扩大引擎的样本覆盖。
+
 ## 最小闭环
 
 - 包层：样本来源与 SHA-256 → ZIP/Manifest/签名 → 资源和 DEX 清单。

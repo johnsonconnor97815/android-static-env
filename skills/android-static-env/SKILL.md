@@ -1,6 +1,6 @@
 ---
 name: android-static-env
-description: 一键搭建、补全和验证 Android App 静态分析环境，覆盖 APK/AAB 与拆分包、DEX/Smali、原生 ELF、加固识别和规则扫描。用于安装分析工具链、修复依赖或准备可复现工作区；设备提取、Hook、抓包和动态脱壳不在默认安装范围。
+description: 一键搭建、补全和验证 Android App 静态分析环境，覆盖 APK/AAB 与拆分包、DEX/Smali、原生 ELF、加固识别、规则扫描及本地 MCP 接入。用于安装分析工具链、配置分析 MCP、修复依赖或准备可复现工作区；设备提取、Hook、抓包和动态脱壳不在默认安装范围。
 license: MIT
 ---
 
@@ -17,6 +17,7 @@ license: MIT
 - **full（默认）**：Java、Android SDK、JADX、Apktool、Google smali/baksmali、dex2jar、bundletool、Androguard、APKiD、Quark 及固定规则、Semgrep、Rizin、Ghidra、LIEF、pyelftools、Capstone、checksec，以及通用文件、ELF、YARA 工具。
 - **core**：Java、SDK、JADX、Apktool、smali/baksmali、bundletool、Androguard。用户要求轻量环境时使用。
 - **MobSF**：通过 `--with-mobsf --mobsf-image <官方版本标签或 digest>` 准备容器和 Compose 文件；需要 Docker。是否启动由用户的任务决定，安装脚本本身只准备镜像。
+- **MCP 接入**：需要 Agent 直接调用分析引擎时，读取 [MCP 配置与验证](references/mcp.md)。随附安装器支持 JADX、Apktool、PyGhidra 与 Semgrep；生成 Codex、Claude Code、Cursor、VS Code 项目配置，并区分协议握手与样本功能验收。
 - **专项补充**：CFR/JD-GUI、Cutter、Flutter/Dart、Unity IL2CPP、Hermes、源码 Lint/detekt 等按实际输入选择；见工具范围文档。商业工具使用用户已有安装和许可。
 
 ## 执行

@@ -19,7 +19,9 @@ jobs:
       - name: Validate portable package
         run: python scripts/validate_repository.py
       - name: Test provisioning invariants without network
-        run: python skills/android-static-env/scripts/test_setup.py
+        run: |
+          python skills/android-static-env/scripts/test_setup.py
+          python skills/android-static-env/scripts/test_mcp.py
 
   agent-installation:
     strategy:

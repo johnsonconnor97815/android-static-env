@@ -25,3 +25,17 @@ Rizin 在读取无入口的 DSO 时会向 stderr 写提示，同时向 stdout �
 - apt 实际修改系统。依赖解析通过 `apt-get --simulate`；checksec 使用发行版下载包解压验证，LLVM 使用已有 NDK 工具。Graphviz 只有安装方案核对。
 
 以上是发布前开发验证的摘要。原始日志、下载缓存、APK 和本地构建产物不随 Skill 分发。可以使用 `scripts/test_setup.py` 与 `scripts/smoke.py` 在自己的工作区重做对应检查；仓库的 CI 另外验证各 Agent 安装后的文件完整性。
+
+## MCP 补充验证（同日）
+
+- 固定安装 JADX MCP/插件 `V6.4.1`、Apktool MCP `V3.0.2`、PyGhidra-MCP `0.2.5` 与 Semgrep `1.177.0` 内置 MCP；四项 stdio 初始化和工具枚举通过。MCP `serverInfo.version` 有些服务返回 SDK 版本；软件版本以安装锁及包元数据为准。
+- 本地生成 APK：Apktool MCP 解码后读取 Manifest 与 Smali；JADX GUI 在 Xvfb 下打开同一 APK，通过 MCP 读取 Manifest 与 Java 源码，均恢复已知标记。
+- ARM64 `.so`：实际导入 Ghidra，读取元数据/导出符号，反编译 JNI 测试函数，完成 Chroma 字符串与代码索引，再执行本地语义检索。没有把主机 ELF 结果当作 Android 验证。
+- Semgrep MCP：通过 `semgrep_scan_with_custom_rule` 扫描本地测试代码，返回预期 rule ID 且扫描 errors 为空；没有使用账号或在线样本服务。
+- 输入 APK 与 `.so` 的测试前后 SHA-256 相同。原始 JSON-RPC、stderr、样本来源、构建命令与输出保留在工作区 `evidence/android-mcp/`。
+- 修正 Ghidra 项目路径不能含点前缀目录的问题；动态使用 MCP 返回的程序标识（可能附带后缀），不假设它等于文件名。
+- 原始 JADX 插件实测监听全部接口；安装器按固定源码派生一个仅监听回环地址的 JAR。逐项比对 ZIP 条目，仅 `PluginServer.class` 不同；实际 socket 为 `[::ffff:127.0.0.1]:8650`。原 JAR 保留，diff/构建记录可复查。
+- Chroma ONNX 模型提前下载并核对内置 SHA-256，启动入口把模型缓存定向到项目目录。修正首次后台下载在 MCP 退出时失败的问题后，语义检索通过。
+- 7 项 MCP 本地行为测试及原有 6 项安装器测试通过；9 种 Agent 的实际 Skill 复制安装与资源哈希检查通过。客户端 MCP 配置已生成；这不等于已实测每种客户端的 MCP 运行时。
+
+MCP 验收仍不覆盖大型混淆 APK、所有插件操作、GUI 的人工桌面交互、MobSF MCP、headless JADX 候选、商业引擎或所有主机平台。测试进程结束后已清理，不留 GUI 后台监听。

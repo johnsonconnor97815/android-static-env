@@ -82,3 +82,15 @@ python3 scripts/test_agent_install.py --report .validation/agent-installs.json
 Installer tests use the real Skills CLI and verify discovery paths and every bundled resource hash. They do not run models or provision the Android toolchain. Previous APK, DEX, and ARM/ARM64 `.so` functional validation is summarized [here](skills/android-static-env/references/validation.md), with untested areas listed explicitly.
 
 [Contributing](CONTRIBUTING.md) · [MIT License](LICENSE)
+
+## Local MCP integrations
+
+The optional MCP installer supports JADX (paired GUI plugin and bridge), Apktool MCP, PyGhidra-MCP, and Semgrep's built-in MCP. It pins releases, isolates Python environments, generates stdio configurations, and checks `initialize` plus paginated `tools/list`.
+
+```bash
+python3 skills/android-static-env/scripts/mcp_setup.py install --workspace ../android-analysis
+python3 skills/android-static-env/scripts/mcp_setup.py check --workspace ../android-analysis
+python3 skills/android-static-env/scripts/mcp_setup.py configure --workspace ../android-analysis --client codex
+```
+
+Select a subset with `--servers apktool,ghidra,semgrep`. Project configuration targets are `codex`, `claude`, `cursor`, and `vscode`; existing unrelated configuration is retained and changes are backed up. JADX requires an open GUI with the matching plugin and is disabled in the default Codex configuration. A successful protocol probe does not verify decompilation; use `mcp_probe.py --calls` for sample-based checks. See the [MCP guide](skills/android-static-env/references/mcp.md) for exact prerequisites, evidence paths, and optional tool candidates.
