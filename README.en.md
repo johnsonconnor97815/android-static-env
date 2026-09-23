@@ -48,7 +48,7 @@ Codex supports `$android-static-env`; Claude Code supports `/android-static-env`
 
 ## Toolchain
 
-- APK and bytecode: Android SDK CLI / Build-Tools, JADX, Apktool, Google smali/baksmali, dex2jar, bundletool, Androguard.
+- APK and bytecode: Android SDK CLI / Build-Tools, JADX, Apktool, Google smali/baksmali, dex2jar, bundletool, Androguard, Droid ASC.
 - Native `.so`: Ghidra, Rizin, LLVM/binutils, checksec, LIEF, pyelftools, Capstone.
 - Scanners: APKiD, YARA, Quark with pinned rules, Semgrep.
 - Utilities: JDK 21, isolated Python environments, ripgrep, jq, file, 7z, OpenSSL, Graphviz.

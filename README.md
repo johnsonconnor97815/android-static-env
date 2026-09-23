@@ -65,7 +65,7 @@ Codex 可显式使用 `$android-static-env`；Claude Code 可使用 `/android-st
 | 范围 | 工具 |
 | --- | --- |
 | APK、资源、签名 | SDK Command-Line Tools / Build-Tools、apkanalyzer、aapt/aapt2、apksigner、zipalign、Apktool |
-| 字节码与包格式 | JADX、Google smali/baksmali、dex2jar、bundletool、Androguard |
+| 字节码与包格式 | JADX、Google smali/baksmali、dex2jar、bundletool、Androguard、Droid ASC |
 | `.so` / ELF | Ghidra、Rizin、LLVM/binutils、checksec、LIEF、pyelftools、Capstone |
 | 规则与加固识别 | APKiD、YARA、Quark + 固定规则、Semgrep |
 | 基础工具 | Temurin JDK 21、Python venv、ripgrep、jq、file、7z、OpenSSL、Graphviz |
